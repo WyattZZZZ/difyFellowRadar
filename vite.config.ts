@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { sha256 } from "js-sha256";
 
 export default defineConfig({
   plugins: [react()],

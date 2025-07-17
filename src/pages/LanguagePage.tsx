@@ -3,15 +3,19 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../components/LanguageSelector";
 
-const LanguagePage: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const LanguagePage: React.FC<{
+  setVerified: (v: boolean) => void;
+  setUsername: (u: string) => void;
+}> = ({ setVerified, setUsername }) => {
   const { t, i18n } = useTranslation();
   const [selectedLang, setSelectedLang] = useState(
     () => localStorage.getItem("lang") || "en"
   );
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (i18n.language !== selectedLang) {
@@ -29,9 +33,9 @@ const LanguagePage: React.FC = () => {
     if (i18n.language !== selectedLang) {
       i18n.changeLanguage(selectedLang);
     }
-    const params = new URLSearchParams(location.search);
-    const authcode = params.get("authcode") || "";
-    navigate(`/chat?authcode=${encodeURIComponent(authcode)}`);
+    setUsername("ziye"); // 这里可以根据实际逻辑设置用户名
+    setVerified(true);
+    navigate("/chat", { replace: true });
   };
 
   return (
@@ -61,40 +65,40 @@ const LanguagePage: React.FC = () => {
             />
           </div>
           {/* 条款勾选 */}
-            <label className="flex items-center gap-2 text-sm text-gray-700 mb-6">
+          <label className="flex items-center gap-2 text-sm text-gray-700 mb-6">
             <input
               type="checkbox"
               checked={agreed}
               onChange={(e) => {
-              setAgreed(e.target.checked);
-              setError("");
+                setAgreed(e.target.checked);
+                setError("");
               }}
               style={{
-              accentColor: "#0033FF"
+                accentColor: "#0033FF",
               }}
             />
             <span>
               {t("accept_terms_prefix")}
               <a
-              href="/userrule.html"
-              target="_blank"
-              className="ml-1 underline"
-              style={{ color: "#0033FF" }}
+                href="/userrule.html"
+                target="_blank"
+                className="ml-1 underline"
+                style={{ color: "#0033FF" }}
               >
-              {t("accept_terms_link")}
+                {t("accept_terms_link")}
               </a>
             </span>
-            </label>
+          </label>
           {/* 按钮和错误提示 */}
-            <button
+          <button
             className={`w-full py-3 rounded font-semibold transition mb-2 ${
               selectedLang && agreed
-              ? "bg-[#0033FF] text-white hover:bg-[#0022AA]"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? "bg-[#0033FF] text-white hover:bg-[#0022AA]"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
             onClick={handleStart}
             disabled={!selectedLang || !agreed}
-            >
+          >
             {selectedLang && agreed
               ? t("start_matching")
               : t("accept_terms_button")}
