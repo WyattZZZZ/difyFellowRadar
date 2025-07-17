@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: "0.0.0.0",
-    port: 5173, // 可根据需要修改端口
+    port: 4173, // 可根据需要修改端口
   },
 });
