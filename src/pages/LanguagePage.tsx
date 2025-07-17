@@ -14,21 +14,21 @@ const langText: Record<
   }
 > = {
   zh: {
-    selectLabel: "请选择语言（默认为英文）",
+    selectLabel: "请选择语言",
     terms: "我已阅读并同意",
     link: "用户条款",
     button: "开始匹配",
     error: "请选择语言并同意用户条款后才能进入。",
   },
   en: {
-    selectLabel: "Please select a language (default is English)",
+    selectLabel: "Please select a language",
     terms: "I have read and agree to the",
     link: "Terms of Service",
     button: "Start Matching",
     error: "Please select a language and agree to the terms to continue.",
   },
   ja: {
-    selectLabel: "言語を選択してください（デフォルトは英語）",
+    selectLabel: "言語を選択してください",
     terms: "私は読んで同意しました",
     link: "利用規約",
     button: "マッチングを開始",
