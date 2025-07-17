@@ -1,106 +1,114 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Logo from "../components/Logo";
+import { useTranslation } from "react-i18next";
 import LanguageSelector from "../components/LanguageSelector";
-
-const langText: Record<
-  string,
-  {
-    selectLabel: string;
-    terms: string;
-    button: string;
-    error: string;
-    link: string;
-  }
-> = {
-  zh: {
-    selectLabel: "请选择语言",
-    terms: "我已阅读并同意",
-    link: "用户条款",
-    button: "开始匹配",
-    error: "请选择语言并同意用户条款后才能进入。",
-  },
-  en: {
-    selectLabel: "Please select a language",
-    terms: "I have read and agree to the",
-    link: "Terms of Service",
-    button: "Start Matching",
-    error: "Please select a language and agree to the terms to continue.",
-  },
-  ja: {
-    selectLabel: "言語を選択してください",
-    terms: "私は読んで同意しました",
-    link: "利用規約",
-    button: "マッチングを開始",
-    error: "言語を選択し、利用規約に同意してください。",
-  },
-};
 
 const LanguagePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedLang, setSelectedLang] = useState("en");
+  const { t, i18n } = useTranslation();
+  const [selectedLang, setSelectedLang] = useState(
+    () => localStorage.getItem("lang") || "en"
+  );
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (i18n.language !== selectedLang) {
+      i18n.changeLanguage(selectedLang);
+    }
+  }, [selectedLang, i18n]);
+
   const handleStart = () => {
     if (!selectedLang || !agreed) {
-      setError(langText[selectedLang]?.error || langText.en.error);
+      setError(t("accept_terms_error"));
       return;
     }
-    console.log("Selected language:", selectedLang); // 控制台输出所选语言
+    console.log("Selected language:", selectedLang);
     localStorage.setItem("lang", selectedLang);
+    if (i18n.language !== selectedLang) {
+      i18n.changeLanguage(selectedLang);
+    }
     const params = new URLSearchParams(location.search);
     const authcode = params.get("authcode") || "";
     navigate(`/chat?authcode=${encodeURIComponent(authcode)}`);
   };
 
-  const t = langText[selectedLang] || langText.en;
-
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center relative">
-      <Logo />
-      <div className="flex flex-col items-center w-full gap-6">
-        <LanguageSelector
-          selected={selectedLang}
-          onChange={(lang) => {
-            setSelectedLang(lang);
-            setError("");
-          }}
-          label={t.selectLabel}
-        />
-        <label className="flex items-center gap-2 text-xs text-gray-500 mt-2">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => {
+    <div className="flex min-h-screen">
+      {/* 左侧表单区 */}
+      <div className="w-full md:w-1/2 flex flex-col justify-center items-center bg-white px-8">
+        <div className="w-full max-w-sm mx-auto">
+          {/* Logo */}
+          <div className="mb-10 flex items-center">
+            <img src="/logo.png" alt="Logo" className="h-12 mr-2" />
+          </div>
+          {/* 标题/副标题 */}
+          <h2 className="text-2xl font-bold mb-2">
+            {t("choose_language_title")}
+          </h2>
+          <p className="text-gray-500 mb-6">{t("choose_language_subtitle")}</p>
+          {/* 语言下拉 */}
+          <div className="mb-6">
+            <LanguageSelector
+              selected={selectedLang}
+              onChange={(lang) => {
+                setSelectedLang(lang);
+                setError("");
+                i18n.changeLanguage(lang);
+              }}
+              label={undefined}
+            />
+          </div>
+          {/* 条款勾选 */}
+            <label className="flex items-center gap-2 text-sm text-gray-700 mb-6">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => {
               setAgreed(e.target.checked);
               setError("");
-            }}
-          />
-          <span>
-            {t.terms}
-            <a
-              href="public/userrule.html"
+              }}
+              style={{
+              accentColor: "#0033FF"
+              }}
+            />
+            <span>
+              {t("accept_terms_prefix")}
+              <a
+              href="/userrule.html"
               target="_blank"
-              className="text-blue-500 ml-1"
+              className="ml-1 underline"
+              style={{ color: "#0033FF" }}
+              >
+              {t("accept_terms_link")}
+              </a>
+            </span>
+            </label>
+          {/* 按钮和错误提示 */}
+            <button
+            className={`w-full py-3 rounded font-semibold transition mb-2 ${
+              selectedLang && agreed
+              ? "bg-[#0033FF] text-white hover:bg-[#0022AA]"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+            onClick={handleStart}
+            disabled={!selectedLang || !agreed}
             >
-              {t.link}
-            </a>
-          </span>
-        </label>
-        <button
-          className={`w-40 py-2 rounded border border-primary font-semibold transition ${
-            selectedLang && agreed
-              ? "bg-primary text-white hover:bg-primary-dark"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
-          onClick={handleStart}
-          disabled={!selectedLang || !agreed}
-        >
-          {t.button}
-        </button>
-        {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+            {selectedLang && agreed
+              ? t("start_matching")
+              : t("accept_terms_button")}
+          </button>
+          {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
+        </div>
+      </div>
+      {/* 右侧品牌区 */}
+      <div className="hidden md:flex w-1/2 min-h-screen relative">
+        <img
+          src="/right.svg"
+          alt="right visual"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
     </div>
   );

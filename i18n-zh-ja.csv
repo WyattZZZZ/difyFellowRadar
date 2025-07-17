@@ -1,0 +1,24 @@
+key,zh,ja
+welcome,欢迎使用 Chatbot,チャットボットへようこそ
+input_placeholder,请输入您的问题...,ご質問を入力してください...
+stop,停止回复,返信を停止
+send,发送,送信
+hello,你好,こんにちは
+working,工作中,作業中
+my_info,我的信息,私の情報
+history,历史匹配记录,マッチ履歴
+choose_language_title,请选择语言以继续,言語を選択して続行してください
+choose_language_subtitle,选择你偏好的语言以获得最佳体验。,最適な体験のために希望の言語を選択してください。
+language,语言,言語
+accept_terms_prefix,我已阅读并同意,に同意してください
+accept_terms_link,用户条款,利用規約
+accept_terms_button,请先同意条款以继续,利用規約に同意してください
+accept_terms_error,请选择语言并同意用户条款后才能进入。,言語を選択し、利用規約に同意してください。
+start_matching,开始匹配,マッチングを開始
+chatbot_welcome,你好啊！这里是伙伴雷达，有什么我能帮你的么？,こんにちは！私はそうだフェローレーダー。何かお手伝いできることはありますか？
+suggestion_1,告诉我你都可以做什么？,あなたができることを教えてください。
+suggestion_2,我要告诉你我要找什么样的队友！,どんなチームメイトを探しているか伝えたい！
+suggestion_3,Dify是什么？,Difyとは何ですか？
+language_zh,中文,中国語
+language_en,英文,英語
+language_ja,日语,日本語 
