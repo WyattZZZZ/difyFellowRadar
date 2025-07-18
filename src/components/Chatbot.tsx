@@ -24,6 +24,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
   const [tab, setTab] = useState("chat"); // chat, info, history
   const streamRef = useRef("");
   const [hasStarted, setHasStarted] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!status) return;
@@ -32,6 +33,10 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
     }, 500);
     return () => clearInterval(timer);
   }, [status]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
 
   const handleInfoClick = () => {
     console.log(t("my_info"));
@@ -90,10 +95,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
       {!hasStarted && (
         <div className="fixed inset-0 flex flex-col items-center justify-center pointer-events-none z-30 px-4">
           <div className="w-full max-w-2xl flex flex-col items-center">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-                <span className="text-2xl">*</span>
-              </div>
+            <div className="flex items-center mb-4 gap-6">
+              <img
+                src="/chatbot.png"
+                alt="Chatbot"
+                className="w-16 h-16 rounded-full object-cover"
+              />
               <div className="text-base font-semibold">
                 {t("chatbot_welcome")}
               </div>
@@ -121,15 +128,23 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
             return (
               <div
                 key={idx}
-                className={`flex items-start gap-2 mb-2 ${
+                className={`flex items-start gap-2 mb-4 ${
                   isUser ? "flex-row-reverse" : "flex-row"
                 }`}
               >
-                <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-400 text-lg">
-                  <span role="img" aria-label="avatar">
-                    {isUser ? "🧑" : "🤖"}
-                  </span>
-                </div>
+                {isUser ? (
+                  <div className="w-12 h-12 rounded-full object-cover">
+                    <span role="img" aria-label="avatar">
+                      🧑
+                    </span>
+                  </div>
+                ) : (
+                  <img
+                    src="/chatbot.png"
+                    alt="Chatbot"
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                )}
                 <span
                   className={
                     isUser
@@ -144,11 +159,11 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
           })}
           {loading && (
             <div className="flex items-start gap-2 mb-2">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-400 text-lg">
-                <span role="img" aria-label="avatar">
-                  🤖
-                </span>
-              </div>
+              <img
+                src="/chatbot.png"
+                alt="Chatbot"
+                className="w-12 h-12 rounded-full object-cover"
+              />
               <div className="flex flex-col">
                 <span className="mb-1 ml-2 text-[#0033FF] font-medium flex items-center">
                   {t("working")}
@@ -163,21 +178,23 @@ const Chatbot: React.FC<ChatbotProps> = ({ authcode, username }) => {
               </div>
             </div>
           )}
+          {/* 滚动锚点 */}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       {/* 输入栏卡片固定底部中央 */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl z-40 px-4">
-        <div className="bg-white rounded-2xl shadow p-6">
+        <div className="bg-white rounded-2xl shadow p-4">
           {/* 两个按钮嵌入卡片顶部，圆角长方形 */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-2 mb-2">
             <button
-              className="px-6 py-2 rounded-lg border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition"
+              className="px-3 py-1 rounded-lg border border-[#0033FF] text-[#0033FF] text-sm font-medium hover:bg-blue-50 transition"
               onClick={handleInfoClick}
             >
               {t("my_info")}
             </button>
             <button
-              className="px-6 py-2 rounded-lg border border-blue-600 text-blue-600 font-medium hover:bg-blue-50 transition"
+              className="px-3 py-1 rounded-lg border border-[#0033FF] text-[#0033FF] text-sm font-medium hover:bg-blue-50 transition"
               onClick={handleHistoryClick}
             >
               {t("history")}
