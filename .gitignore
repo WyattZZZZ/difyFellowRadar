@@ -1,5 +1,0 @@
-./dist/*
-./node_modules/*
-.env
-./i18n-zh-ja.csv
-./.DS_store
